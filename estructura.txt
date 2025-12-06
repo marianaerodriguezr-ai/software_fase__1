@@ -1,0 +1,70 @@
+Listado de rutas de carpetas para el volumen OS
+El número de serie del volumen es 921D-3B7F
+C:.
+|   .gitignore
+|   app.py
+|   db_bck.json
+|   estructura.txt
+|   pytest.ini
+|   README.md
+|   requirements.txt
+|   
++---data
+|       db.json
+|       
++---endpoints
+|       favorites.py
+|       products.py
+|       __init__.py
+|       
++---src
+|   |   __init__.py
+|   |   
+|   +---api
+|   |       auth.py
+|   |       categories.py
+|   |       __init__.py
+|   |       
+|   +---models
+|   |       category.py
+|   |       product.py
+|   |       __init__.py
+|   |       
+|   +---repositories
+|   |   |   category_repository.py
+|   |   |   product_repository.py
+|   |   |   __init__.py
+|   |   |   
+|   |   +---interfaces
+|   |   |   |   category_repository_interface.py
+|   |   |   |   product_repository_interface.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           category_repository_interface.cpython-313.pyc
+|   |   |           
+|   |   \---in_memory
+|   |       |   category_repository.py
+|   |       |   product_repository.py
+|   |       |   __init__.py
+|   |       |   
+|   |       \---__pycache__
+|   |               category_repository.cpython-313.pyc
+|   |               product_repository.cpython-313.pyc
+|   |               __init__.cpython-313.pyc
+|   |               
+|   +---services
+|   |       category_service.py
+|   |       product_service.py
+|   |       __init__.py
+|   |       
+|   \---utils
+|       |   database_connection.py
+|       |   __init__.py
+|       |   
+|       \---__pycache__
+|               database_connection.cpython-313.pyc
+|               __init__.cpython-313.pyc
+|               
+\---tests
+        __init__.py
+        
