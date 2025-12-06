@@ -1,0 +1,6 @@
+flask
+flask-restful
+pytest
+pytest-mock
+colorama
+anyio

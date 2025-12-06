@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 import json
-from utils.database_connection import DatabaseConnection
+from src.utils.database_connection import DatabaseConnection
 
 def is_valid_token(token):
     return token == 'abcd1234'

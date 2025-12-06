@@ -1,61 +1,31 @@
-from flask_restful import Resource, reqparse
-import json
-from flask import request
-from utils.database_connection import DatabaseConnection
+from flask import Blueprint, request, jsonify
+from src.services.product_service import ProductService
+from src.services.category_service import CategoryService
 
-def is_valid_token(token):
-    return token == 'abcd1234'
+bp = Blueprint("products", __name__)
+service = ProductService()
+category_service = CategoryService()
 
-class ProductsResource(Resource):
-    def __init__(self):
-       
-        self.db = DatabaseConnection('db.json')
-        self.db.connect()
+@bp.route("/products", methods=["POST"])
+def create_product():
+    data = request.get_json()
+    if not data or "name" not in data or "price" not in data or "category_id" not in data:
+        return jsonify({"error": "Missing fields"}), 400
 
-        self.products = self.db.get_products()
-        self.parser = reqparse.RequestParser()
-        
-    def get(self, product_id=None):
-        args = self.parser.parse_args()
-        token = request.headers.get('Authorization')
-        category_filter = request.args.get('category')
-      
-        if not token:
-            return { 'message': 'Unauthorized acces token not found'}, 401
+    category = category_service.get_category_by_id(data["category_id"])
+    if not category:
+        return jsonify({"error": "Category not found"}), 404
 
-        if not is_valid_token(token):
-           return { 'message': 'Unauthorized invalid token'}, 401
+    new_product = service.create_product(data["name"], data["price"], category)
+    return jsonify({
+        "id": new_product.id,
+        "name": new_product.name,
+        "price": new_product.price,
+        "category_id": category.id
+    }), 201
 
-        if category_filter:
-            filtered_products = [p for p in self.products if p['category'].lower() == category_filter.lower()]
-            return filtered_products 
-        
-        if product_id is not None:
-            product = next((p for p in self.products if p['id'] == product_id), None)
-            if product is not None:
-                return product
-            else:
-                return {'message': 'Product not found'}, 404
-              
-        return self.products
-
-    def post(self):
-        token = request.headers.get('Authorization')
-        parser = reqparse.RequestParser()
-        parser.add_argument('name', type=str, required=True, help='Name of the product')
-        parser.add_argument('category', type=str, required=True, help='Category of the product')
-        parser.add_argument('price', type=float, required=True, help='Price of the product')
-
-        args = parser.parse_args()
-        new_product = {
-            'id': len(self.products) + 1,
-            'name': args['name'],
-            'category': args['category'],
-            'price': args['price']
-        }
-
-        self.products.append(new_product)
-        self.db.add_product(new_product)
-        return {'mensaje': 'Product added', 'product': new_product}, 201
-
-
+@bp.route("/products", methods=["GET"])
+def get_products():
+    products = service.get_all_products()
+    result = [{"id": p.id, "name": p.name, "price": p.price, "category_id": p.category.id} for p in products]
+    return jsonify(result), 200
